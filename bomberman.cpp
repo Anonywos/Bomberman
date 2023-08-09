@@ -95,7 +95,7 @@ void setPlayer(){
 	p.yPlayer = 2.0;
 	p.zPlayer = 6.0;
 	p.speed = 1.0;
-	p.bombLimit = 3;
+	p.bombLimit = 2;
 	playerList[0] = p;
 }
 
@@ -233,9 +233,9 @@ void init(void){
 			}else if(i%2 == 0 && j%2 == 0){
 				mapMatriz[i][j] = 1;
 			}else if(i >= 3 && i <= 11){
-				//mapMatriz[i][j] = 2;
+				mapMatriz[i][j] = 2;
 			}else if(j >= 3 && j <= 11){
-				//mapMatriz[i][j] = 2;
+				mapMatriz[i][j] = 2;
 			}else{
 				mapMatriz[i][j] = 0;
 			}
@@ -298,9 +298,9 @@ void display(){
 		glClearColor (0.03, 0.67, 0.9, 0.8); 
 	    glLoadIdentity();
 	    
-	    GLuint mode;
-	    if(use_gouraud) mode = (GLM_SMOOTH | GLM_TEXTURE);
-	    else mode = (GLM_FLAT  |GLM_TEXTURE);
+	    // GLuint mode;
+	    // if(use_gouraud) mode = (GLM_SMOOTH | GLM_TEXTURE);
+	    // else mode = (GLM_FLAT  |GLM_TEXTURE);
 	    
 	    
 	    drawMap();
@@ -344,7 +344,8 @@ void display(){
 			    	glTranslatef(b->x, b->y, b->z);
 			        glScalef (1.0, 1.5, 1.0);
 			        glColor3f(0.0,0.0,0.0);
-			        glutSolidCube(1.0); // Tamanho
+			        //glutSolidCube(1.0); // Tamanho
+			        glutSolidSphere(0.7, 10, 10); 
 			        glShadeModel(GL_SMOOTH);
 	    		glPopMatrix();
 	    		b->tick += 1; 
@@ -367,7 +368,8 @@ void display(){
 			    	glTranslatef(b->x, b->y, b->z);
 			        glScalef (1.0, 1.5, 1.0);
 			        glColor3f(0.0,0.0,0.0);
-			        glutSolidCube(1.0); // Tamanho
+			        //glutSolidCube(1.0); // Tamanho
+			        glutSolidSphere(0.7, 10, 10);
 			        glShadeModel(GL_SMOOTH);
 	    		glPopMatrix();
 	    		b->tick += 1; 
@@ -610,7 +612,7 @@ void explosion(bomb& b){
 			if(playerCollision(x-i, z)){
 				gameState = GAME_OVER;
 				sndPlaySound(TEXT("./sound/levelLost.wav"), SND_ASYNC);
-			}else if(enemyCollision(x+i, z)){
+			}else if(enemyCollision(x-i, z)){
 				gameState = VICTORY;
 				sndPlaySound(TEXT("./sound/levelWon.wav"), SND_ASYNC);
 			}else if(isCollidingWallBrick(x-i, z) == false){
@@ -648,7 +650,7 @@ void explosion(bomb& b){
 			if(playerCollision(x, z+i)){
 				gameState = GAME_OVER;
 				sndPlaySound(TEXT("./sound/levelLost.wav"), SND_ASYNC);
-			}else if(enemyCollision(x+i, z)){
+			}else if(enemyCollision(x, z+i)){
 				gameState = VICTORY;
 				sndPlaySound(TEXT("./sound/levelWon.wav"), SND_ASYNC);
 			}else if(isCollidingWallBrick(x, z+i) == false){
@@ -686,7 +688,7 @@ void explosion(bomb& b){
 			if(playerCollision(x, z-i)){
 				gameState = GAME_OVER;
 				sndPlaySound(TEXT("./sound/levelLost.wav"), SND_ASYNC);
-			}else if(enemyCollision(x+i, z)){
+			}else if(enemyCollision(x, z-i)){
 				gameState = VICTORY;
 				sndPlaySound(TEXT("./sound/levelWon.wav"), SND_ASYNC);
 			}else if(isCollidingWallBrick(x, z-i) == false){
@@ -1038,81 +1040,4 @@ void enemyScape(int direction){
 		}
 	}
 }
-
-
-// void drawModelS()
-// {
-// 	if (!pmodelS)
-// 	{
-// 		pmodelS = glmReadOBJ("models/bomberman.obj");
-// 		if (!pmodelS)
-// 			exit(0);
-// 		glmUnitize(pmodelS);
-// 		glmFacetNormals(pmodelS);//normal do obejeto
-// 		glmVertexNormals(pmodelS, 10);
-// 	}
-// 	glmDraw(pmodelS, GLM_SMOOTH | GLM_TEXTURE | GLM_MATERIAL);
-// 	glPopMatrix();
-// 	glPopMatrix();
-// 	glutSwapBuffers();
-// 
-// }
-
-// Inicializa parâmetros de rendering
-
-// void loadModel(){
-// 	bool loadOBJ(
-// 	    const char * path,
-// 	    std::vector < glm::vec3 > & out_vertices,
-// 	    std::vector < glm::vec2 > & out_uvs,
-// 	    std::vector < glm::vec3 > & out_normals
-// 	)
-// 	std::vector< unsigned int > vertexIndices, uvIndices, normalIndices;
-// 	std::vector< glm::vec3 > temp_vertices;
-// 	std::vector< glm::vec2 > temp_uvs;
-// 	std::vector< glm::vec3 > temp_normals;
-// 	
-// 	FILE * file = fopen(path, "r");
-// 	if( file == NULL ){
-// 	    printf("Impossible to open the file !\n");
-// 	    return false;
-// 	}
-// 	while( 1 ){
-// 
-// 	    char lineHeader[128];
-	    // read the first word of the line
-// 	    int res = fscanf(file, "%s", lineHeader);
-// 	    if (res == EOF) break;
-// 	    if ( strcmp( lineHeader, "v" ) == 0 ){
-// 		    glm::vec3 vertex;
-// 		    fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z );
-// 		    temp_vertices.push_back(vertex);
-// 		}else if ( strcmp( lineHeader, "vt" ) == 0 ){
-// 		    glm::vec2 uv;
-// 		    fscanf(file, "%f %f\n", &uv.x, &uv.y );
-// 		    temp_uvs.push_back(uv);
-// 		}}else if ( strcmp( lineHeader, "vn" ) == 0 ){
-// 		    glm::vec3 normal;
-// 		    fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z );
-// 		    temp_normals.push_back(normal);
-// 		}else if ( strcmp( lineHeader, "f" ) == 0 ){
-// 		    std::string vertex1, vertex2, vertex3;
-// 		    unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
-// 		    int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2] );
-// 		    if (matches != 9){
-// 		        printf("File can't be read by our simple parser : ( Try exporting with other options\n");
-// 		        return false;
-// 		    }
-// 		    vertexIndices.push_back(vertexIndex[0]);
-// 		    vertexIndices.push_back(vertexIndex[1]);
-// 		    vertexIndices.push_back(vertexIndex[2]);
-// 		    uvIndices    .push_back(uvIndex[0]);
-// 		    uvIndices    .push_back(uvIndex[1]);
-// 		    uvIndices    .push_back(uvIndex[2]);
-// 		    normalIndices.push_back(normalIndex[0]);
-// 		    normalIndices.push_back(normalIndex[1]);
-// 		    normalIndices.push_back(normalIndex[2]);
-// 		}
-// 	}
-// }
 
